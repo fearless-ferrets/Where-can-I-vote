@@ -16,10 +16,10 @@ const App = () => {
         params: {
           lat: addressData.latitude,
           long: addressData.longitude,
-          address: addressData.address
-            .replaceAll(',', '')
-            .replaceAll('USA', '')
-            .trim(),
+          address: addressData.address,
+          // .replace(/,/g, '')
+          // .replace(/ USA$/g, '')
+          // .trim(),
         },
       })
       .then(({ data }) => {

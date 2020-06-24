@@ -4,9 +4,9 @@ const router = require('./routes/router');
 
 // passing in the path to config here because we've got the .env file in the root folder
 require('dotenv').config({
-  path: path.resolve(__dirname, '../.env'),
+  path: path.resolve(__dirname, '../client/.env'),
 });
-
+// console.log('process.env', process.env);
 const app = express();
 const port = 3000;
 
@@ -29,7 +29,7 @@ app.use((err, req, res, next) => {
   const defaultErr = {
     log: 'Express error handler caught unknown middleware error',
     status: 400,
-    message: { error: err ? err : 'An error occurred'}, // if there is an error, return that message, otherwise use default
+    message: { error: err ? err : 'An error occurred' }, // if there is an error, return that message, otherwise use default
   };
 
   // create an object and put into it the defaultErr overwritten with the err object parameter (if it was passed in)

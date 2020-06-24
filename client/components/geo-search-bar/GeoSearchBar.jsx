@@ -99,11 +99,14 @@ const GeoSearchBar = ({ onSubmit }) => {
           'Here are the lat/long pairs of the location :: ',
           `Lat ::${lat}, Lon ${lng}`
         );
-
+        console.log(
+          'address description',
+          description.replace(/,/g, '').replace(/ USA$/g, '').trim()
+        );
         onSubmit({
           latitude: lat,
           longitude: lng,
-          address: description,
+          address: description.replace(/,/g, '').replace(/ USA$/g, '').trim(),
         });
       })
       .catch((error) => {
