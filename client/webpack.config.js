@@ -6,6 +6,9 @@ const webpack = require('webpack');
 //  minicssExtractPlugin
 
 const env = dotenv.config().parsed;
+console.log('Logged from webpack');
+console.log('env var ->>cd ', env);
+
 const envKeys = Object.keys(env).reduce((prev, next) => {
   prev[`process.env.${next}`] = JSON.stringify(env[next]);
   return prev;
@@ -23,7 +26,7 @@ module.exports = {
     compress: true,
     port: 9000,
     proxy: {
-      '*': 'http://[::1]:3000',
+      '*': 'http://localhost:3000',
     },
   },
   module: {

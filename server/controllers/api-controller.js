@@ -8,9 +8,12 @@ controller.apiQueries = (req, res, next) => {
   const civicAPI = process.env.CIVIC_API_KEY;
   const mapsAPI = process.env.MAPS_API_KEY;
 
+  console.log('civicAPI:', civicAPI);
+  console.log('mapsAPI:', mapsAPI);
+
   // using an object for user location so we have their address, their longitude, and their latitude from the query parameters.
   const userLocation = {};
-
+  console.log('query - > ', req.query);
   if (req.query) {
     userLocation.address = req.query.address;
     userLocation.lat = req.query.lat;

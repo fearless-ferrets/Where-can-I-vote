@@ -169,7 +169,7 @@ const Map = ({ mapData }) => {
   return (
     <div>
       <LoadScriptOnlyIfNeeded
-        googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+        googleMapsApiKey={process.env.MAPS_API_KEY}
         language="en"
         region="us"
       >
