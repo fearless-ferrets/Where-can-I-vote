@@ -168,7 +168,7 @@ controller.apiQueries = (req, res, next) => {
         const location = electionData.pollingLocations[i].address;
         // appending together the first line of the address with the city and state
         let currentAddress = `${location.line1} ${location.city} ${location.state}`.replace(
-          /[/\<>!#@$&+,;:?="#5]/g,
+          /[/\<>!#@$&+,;:?="#%]/g,
           ''
         );
         // encoding the address so we can use it in the query URI
@@ -195,7 +195,7 @@ controller.apiQueries = (req, res, next) => {
         const location = electionData.earlyVoteSites[i].address;
         // appending together the first line of the address with the city and state
         let currentAddress = `${location.line1} ${location.city} ${location.state}`.replace(
-          /[/\<>!#@$&+,;:?="#5]/g,
+          /[/\<>!#@$&+,;:?="#%]/g,
           ''
         );
         // encoding the address so we can use it in the query URI
@@ -222,7 +222,7 @@ controller.apiQueries = (req, res, next) => {
         const location = electionData.dropOffLocations[i].address;
         // appending together the first line of the address with the city and state
         let currentAddress = `${location.line1} ${location.city} ${location.state}`.replace(
-          /[/\<>!#@$&+,;:?="#5]/g,
+          /[/\<>!#@$&+,;:?="#%]/g,
           ''
         );
         // encoding the address so we can use it in the query URI
