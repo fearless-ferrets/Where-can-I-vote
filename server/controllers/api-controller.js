@@ -136,11 +136,15 @@ controller.apiQueries = (req, res, next) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        // saving and exporting an object with the matching latitude and longitude from the API results
-        const location = {};
-        location.latitude = data.results[0].geometry.location.lat;
-        location.longitude = data.results[0].geometry.location.lng;
-        return location;
+        if (data.results[0].geometry) {
+          // saving and exporting an object with the matching latitude and longitude from the API results
+          const location = {};
+          location.latitude = data.results[0].geometry.location.lat;
+          location.longitude = data.results[0].geometry.location.lng;
+          return location;
+        }
+        // if we don't get a match, return false
+        return false;
       })
       .catch((err) => {
         console.log(
@@ -167,18 +171,23 @@ controller.apiQueries = (req, res, next) => {
         // simpler reference to the location for the current element
         const location = electionData.pollingLocations[i].address;
         // appending together the first line of the address with the city and state
-        let currentAddress = `${location.line1} ${location.city} ${location.state}`.replace(/[\W\s]/g,'');                                    
+        let currentAddress = `${location.line1} ${location.city} ${location.state}`.replace(/[\W\s]/g, '');
         // encoding the address so we can use it in the query URI
         currentAddress = encodeURI(currentAddress);
         // saving the query URI for our fetch request
         const queryURI = `https://maps.googleapis.com/maps/api/geocode/json?address=${currentAddress}&key=${mapsAPI}`;
         // then make call to geocoding API to get long/lat
         const loc = await doGeocodeFetch(queryURI);
-        // grab the long and lat properties from the result of the API query
-        const { longitude, latitude } = loc;
-        // and save them in the address property for that pollingLocation
-        location.longitude = longitude;
-        location.latitude = latitude;
+        // test where loc is a successful location
+        if (loc) {
+          // if so, grab the long and lat properties from the result of the API query
+          const { longitude, latitude } = loc;
+          // and save them in the address property for that pollingLocation
+          location.longitude = longitude;
+          location.latitude = latitude;
+        }
+        // otherwise we don't save this location - BUT we should do something with this data later
+        // probably display it in text under something like "addresses we couldn't show you on the map"
       }
     }
 
@@ -191,18 +200,23 @@ controller.apiQueries = (req, res, next) => {
         // simpler reference to the location for the current element
         const location = electionData.earlyVoteSites[i].address;
         // appending together the first line of the address with the city and state
-        let currentAddress = `${location.line1} ${location.city} ${location.state}`.replace(/[\W\s]/g,'');
+        let currentAddress = `${location.line1} ${location.city} ${location.state}`.replace(/[\W\s]/g, '');
         // encoding the address so we can use it in the query URI
         currentAddress = encodeURI(currentAddress);
         // saving the query URI for our fetch request
         const queryURI = `https://maps.googleapis.com/maps/api/geocode/json?address=${currentAddress}&key=${mapsAPI}`;
         // then make call to geocoding API to get long/lat
         const loc = await doGeocodeFetch(queryURI);
-        // grab the long and lat properties from the result of the API query
-        const { longitude, latitude } = loc;
-        // and save them in the address property for that earlyVoteSite
-        location.longitude = longitude;
-        location.latitude = latitude;
+        // test where loc is a successful location
+        if (loc) {
+          // if so, grab the long and lat properties from the result of the API query
+          const { longitude, latitude } = loc;
+          // and save them in the address property for that pollingLocation
+          location.longitude = longitude;
+          location.latitude = latitude;
+        }
+        // otherwise we don't save this location - BUT we should do something with this data later
+        // probably display it in text under something like "addresses we couldn't show you on the map"
       }
     }
 
@@ -215,18 +229,23 @@ controller.apiQueries = (req, res, next) => {
         // simpler reference to the location for the current element
         const location = electionData.dropOffLocations[i].address;
         // appending together the first line of the address with the city and state
-        let currentAddress = `${location.line1} ${location.city} ${location.state}`.replace(/[\W\s]/g,'');
+        let currentAddress = `${location.line1} ${location.city} ${location.state}`.replace(/[\W\s]/g, '');
         // encoding the address so we can use it in the query URI
         currentAddress = encodeURI(currentAddress);
         // saving the query URI for our fetch request
         const queryURI = `https://maps.googleapis.com/maps/api/geocode/json?address=${currentAddress}&key=${mapsAPI}`;
         // then make call to geocoding API to get long/lat
         const loc = await doGeocodeFetch(queryURI);
-        // grab the long and lat properties from the result of the API query
-        const { longitude, latitude } = loc;
-        // and save them in the address property for that dropOffLocation
-        location.longitude = longitude;
-        location.latitude = latitude;
+        // test where loc is a successful location
+        if (loc) {
+          // if so, grab the long and lat properties from the result of the API query
+          const { longitude, latitude } = loc;
+          // and save them in the address property for that pollingLocation
+          location.longitude = longitude;
+          location.latitude = latitude;
+        }
+        // otherwise we don't save this location - BUT we should do something with this data later
+        // probably display it in text under something like "addresses we couldn't show you on the map"
       }
     }
 
