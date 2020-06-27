@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const router = require('./routes/router');
+const login = require('./routes/login');
 
 // passing in the path to config here because we've got the .env file in the root folder
 require('dotenv').config({
@@ -15,6 +16,12 @@ app.use(express.json());
 
 // define route handlers
 app.use('/api', router);
+
+//create a new router for logins
+app.use('/api/login', login);
+
+//create a new router for and signups
+app.use('/api/signup', router);
 
 // serve up static assets
 app.use(express.static(path.resolve(__dirname, '../dist')));
