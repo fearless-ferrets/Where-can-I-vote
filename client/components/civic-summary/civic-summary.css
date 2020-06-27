@@ -21,6 +21,7 @@
   font-size: 24px;
   line-height: 20px;
   color: #000000;
+  margin-bottom: 20px;
 }
 
 .main__banner h2 {
@@ -32,6 +33,7 @@
 .main__banner h2,
 p.small {
   color: #776868;
+  margin-bottom: 20px;
 }
 
 .summary__upper {
@@ -63,9 +65,19 @@ p.small {
   flex-direction: column;
 }
 
-.links {
-  font-size: 18px;
+.summary__links a {
+  font-size: 16px;
   line-height: 26px;
   text-decoration-line: underline;
   color: #0073fa;
+}
+
+.red__bold {
+  color: #a91b1b;
+  font-weight: bold;
+}
+
+.green__bold {
+  color: #3bbd58;
+  font-weight: bold;
 }
