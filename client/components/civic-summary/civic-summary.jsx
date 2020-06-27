@@ -8,13 +8,13 @@ const Electioninfo = ({ payload }) => {
 
   console.log('ElectionINFO', payload);
   let electionAdministrationBody = undefined;
-  if (payload.length > 0) {
+  if (payload && payload.length > 0) {
     electionAdministrationBody = payload[0]['electionAdministrationBody'];
   }
   return (
     <div className={styles.summary__lower}>
       <div className={styles.summary__links}>
-        {Object.keys(electionAdministrationBody).map((key) => {
+        {electionAdministrationBody?Object.keys(electionAdministrationBody).map((key) => {
           return (
             <a href={`${electionAdministrationBody[key]}`} key={key}>
               {key
@@ -23,7 +23,7 @@ const Electioninfo = ({ payload }) => {
                 .join(' ')}
             </a>
           );
-        })}
+        }):null}
       </div>
     </div>
   );
@@ -34,7 +34,7 @@ const VoteAssisterInfo = ({ payload }) => {
   return (
     <div>
       <h1>Next Election's Summary</h1>
-      <h2>{payload.election.name}</h2>
+      <h2>{payload.election? payload.election.name : ''}</h2>
       <span className={styles.small}>Mail only state: </span>
       <span>{payload.mailOnly ? 'Yes' : 'No'}</span>
     </div>
@@ -56,7 +56,7 @@ const CivicSummary = ({ votingInfo }) => {
         />
       </div>
       <div className={styles.summary__middle}>
-        Election Day: <strong>{election.electionDay}</strong>
+        Election Day: <strong>{!election? '': election.electionDay}</strong>
       </div>
       <Electioninfo payload={state} />
     </div>
