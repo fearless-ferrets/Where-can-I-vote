@@ -1,7 +1,7 @@
 .main__banner {
   width: 334px;
   height: 456px;
-  border-top: 6px solid #40a4f4;
+  border-top: 6px solid #013364;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -15,7 +15,7 @@
   flex-direction: column;
   align-items: center;
 }
-.where__vote {
+.form__title {
   margin-bottom: 20px;
 }
 
@@ -33,7 +33,7 @@
 
 .subtext {
   font-size: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 }
 
 .search__button {
@@ -61,7 +61,7 @@
 }
 
 .search__input__button {
-  background: #428bca;
+  background: #ad3030;
   border-radius: 5px;
   height: 3.75em;
   border: none;
