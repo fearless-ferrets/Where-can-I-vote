@@ -6,13 +6,13 @@ const webpack = require('webpack');
 //  minicssExtractPlugin
 
 const env = dotenv.config().parsed;
-console.log('Logged from webpack');
-console.log('env var ->>cd ', env);
 
 const envKeys = Object.keys(env).reduce((prev, next) => {
   prev[`process.env.${next}`] = JSON.stringify(env[next]);
   return prev;
 }, {});
+
+const isProduction = env === 'production';
 
 module.exports = {
   mode: 'development',
@@ -28,6 +28,7 @@ module.exports = {
       '/': 'http://localhost:3000',
     },
   },
+  devtool: isProduction ? 'source-map' : 'inline-source-map',
   module: {
     rules: [
       {
