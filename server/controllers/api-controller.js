@@ -122,11 +122,15 @@ controller.apiQueries = (req, res, next) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        // saving and exporting an object with the matching latitude and longitude from the API results
-        const location = {};
-        location.latitude = data.results[0].geometry.location.lat;
-        location.longitude = data.results[0].geometry.location.lng;
-        return location;
+        if (data.results[0].geometry) {
+          // saving and exporting an object with the matching latitude and longitude from the API results
+          const location = {};
+          location.latitude = data.results[0].geometry.location.lat;
+          location.longitude = data.results[0].geometry.location.lng;
+          return location;
+        }
+        // if we don't get a match, return false
+        return false;
       })
       .catch((err) => {
         console.log(
