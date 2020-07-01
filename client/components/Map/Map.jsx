@@ -106,7 +106,8 @@ const InfoBoxContent = (props) => {
 
 const Map = ({ mapData }) => {
   console.log('MAP DATA', mapData);
-
+  console.log(`User Location`, JSON.stringify(mapData.userLocation));
+  
   const { pollingLocations } = mapData;
 
   const initPosition = {
@@ -183,7 +184,7 @@ const Map = ({ mapData }) => {
           options={options}
           zoom={8}
         >
-          {pollingLocations.map((location) => (
+          {pollingLocations ? pollingLocations.map((location) => (
             <Marker
               key={location.address.locationName}
               position={{
@@ -201,7 +202,7 @@ const Map = ({ mapData }) => {
                 scale: 1.25,
               }}
             />
-          ))}
+          )):null}
 
           {infoOpen && selectedPlace && (
             <InfoWindow
