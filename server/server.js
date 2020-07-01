@@ -1,12 +1,14 @@
-const express = require('express');
 const path = require('path');
-const router = require('./routes/router');
-
-// passing in the path to config here because we've got the .env file in the root folder
 require('dotenv').config({
   path: path.resolve(__dirname, '../client/.env'),
 });
-// console.log('process.env', process.env);
+
+const express = require('express');
+const router = require('./routes/router');
+// const login = require('./routes/login');
+
+// passing in the path to config here because we've got the .env file in the root folder
+console.log('process.env', process.env.POSTGRES_URI);
 const app = express();
 const port = 3000;
 
@@ -15,6 +17,14 @@ app.use(express.json());
 
 // define route handlers
 app.use('/api', router);
+
+//creates a  router for logins
+app.use('/api/login', require('./routes/login'));
+
+app.use('/api/login', require('./routes/login'));
+
+//creates a  router for and signups
+app.use('/api/signup', require('./routes/signup'));
 
 // serve up static assets
 app.use(express.static(path.resolve(__dirname, '../dist')));

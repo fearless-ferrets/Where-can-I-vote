@@ -142,7 +142,7 @@ const GeoSearchBar = ({ onSubmit }) => {
     <div ref={ref}>
       <input
         className={styles.navbar__location__search}
-        placeholder="Please type your address/zip code..."
+        placeholder="123 Main St."
         value={value}
         onChange={handleInput}
         disabled={!ready}
