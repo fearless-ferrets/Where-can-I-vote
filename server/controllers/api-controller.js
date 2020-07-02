@@ -1,4 +1,12 @@
 const fetch = require('node-fetch');
+const redis = require('redis');
+const client = redis.createClient();
+const { promisify } = require('util');
+const getAsync = promisify(client.get).bind(client);
+
+client.on('error', function (error) {
+  console.error(error);
+});
 
 const invalidDataError = require('../constants/errors/invalid-data');
 
@@ -113,34 +121,58 @@ controller.apiQueries = (req, res, next) => {
       );
   };
 
-  const doGeocodeFetch = (queryURI) => {
-    return fetch(queryURI, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'Application/JSON',
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.results[0].geometry) {
-          // saving and exporting an object with the matching latitude and longitude from the API results
-          const location = {};
-          location.latitude = data.results[0].geometry.location.lat;
-          location.longitude = data.results[0].geometry.location.lng;
-          return location;
-        }
-        // if we don't get a match, return false
-        return false;
+
+  const checkRedisOrGeocode = async (address) => {
+    // query string
+    const queryURI = `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${mapsAPI}`;
+
+    let coordsObj;
+    // check to see if address is in Redis
+    await getAsync(address)
+      .then((reply) => {
+        // if it is, store the data in coordsObj
+        if (reply) coordsObj = JSON.parse(reply);
       })
-      .catch((err) => {
-        console.log(
-          "error getting pollingLocation address's latitude and/or longitude: ",
-          err
-        );
-      });
+      .catch((err) => console.log(err));
+
+    // no Redis data, so we need to query the google maps API for lat and long
+    if (coordsObj === undefined) {
+      console.log('no data found in Redis');
+      return fetch(queryURI)
+        .then((resp) => resp.json())
+        .then((resp) => {
+          if (
+            resp.results[0].geometry.location.hasOwnProperty('lat') &&
+            resp.results[0].geometry.location.hasOwnProperty('lng')
+          ) {
+            const locationObj = {
+              latitude: resp.results[0].geometry.location.lat,
+              longitude: resp.results[0].geometry.location.lng,
+            };
+            client.set(address, JSON.stringify(locationObj));
+            return locationObj;
+          }
+        });
+    }
+
+    // data found in Redis, so return Promisified version of coordsObj
+    console.log('data found in Redis');
+    return new Promise((resolve, reject) => {
+      resolve(coordsObj);
+      reject(new Error('Error wth Redis getting lat and lng'));
+    });
   };
 
+  // to geocode an address, we need to make a get request from this URL with the address
+  // `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${mapsAPI}`
+  // the resulting long/lat for each will be in results[index].geometry.location.lat and
+  // results[index].geometry.location.long
+  // in general, we'll want to use results[0] because other results are just if it's unsure
+  // about the address and gives multiple responses
+
   const geoCodeSubArray = async (array) => {
+    // create an array to hold all of our API requests
+    const promises = [];
     // iterate over array
     for (let i = 0; i < array.length; i += 1) {
       // simpler reference to the location for the current element
@@ -152,49 +184,61 @@ controller.apiQueries = (req, res, next) => {
       );
       // encoding the address so we can use it in the query URI
       currentAddress = encodeURI(currentAddress);
-      // saving the query URI for our fetch request
-      const queryURI = `https://maps.googleapis.com/maps/api/geocode/json?address=${currentAddress}&key=${mapsAPI}`;
-      // then make call to geocoding API to get long/lat
-      const loc = await doGeocodeFetch(queryURI);
-      // grab the long and lat properties from the result of the API query
-      const { longitude, latitude } = loc;
-      // and save them in the address property for that dropOffLocation
-      location.longitude = longitude;
-      location.latitude = latitude;
+      // const queryURI = `https://maps.googleapis.com/maps/api/geocode/json?address=${currentAddress}&key=${mapsAPI}`;
+      // push the fetch request to our promises array
+      // promises.push(fetch(queryURI).then((fetchRes) => fetchRes.json()));
+      const tempPromise = checkRedisOrGeocode(currentAddress);
+      console.log(tempPromise);
+      promises.push(checkRedisOrGeocode(currentAddress));
     }
+
+    // wait for all fetch requests to resolve
+    await Promise.all(promises)
+      .then((responses) => {
+        // console.log('responses ->', responses);
+        responses.forEach((data, i) => {
+          // console.log('data ->', data);
+          const location = array[i].address;
+          // set the address latitude and longitude to the data we got back from the fetch request
+          if (
+            data.hasOwnProperty('latitude') &&
+            data.hasOwnProperty('longitude')
+          ) {
+            location.latitude = data.latitude;
+            location.longitude = data.longitude;
+          }
+        });
+      })
+      .catch((err) => console.log(err));
   };
 
-  // to geocode an address, we need to make a get request from this URL with the address
-  // `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${mapsAPI}`
-  // the resulting long/lat for each will be in results[index].geometry.location.lat and
-  // results[index].geometry.location.long
-  // in general, we'll want to use results[0] because other results are just if it's unsure
-  // about the address and gives multiple responses
-
   const geocodeVotingLocations = async (electionData) => {
+    // make an array of all the locs
+    const allLocations = [];
     // handle the possibility that there may not be any pollingLocations
     if (!electionData.pollingLocations) {
       electionData.pollingLocations = [];
-    } else {
-      await geoCodeSubArray(electionData.pollingLocations);
     }
 
     // handle the possibility that there may not be any earlyVoteSites
     if (!electionData.earlyVoteSites) {
       electionData.earlyVoteSites = [];
-    } else {
-      await geoCodeSubArray(electionData.earlyVoteSites);
     }
 
     // handle the possibility that there may not be any earlyVoteSites
     if (!electionData.dropOffLocations) {
       electionData.dropOffLocations = [];
-    } else {
-      await geoCodeSubArray(electionData.dropOffLocations);
     }
 
+    // push all subarrays into the all locations array
+    allLocations.push(...electionData.pollingLocations);
+    allLocations.push(...electionData.earlyVoteSites);
+    allLocations.push(...electionData.dropOffLocations);
+
+    // geocode all the locations
+    await geoCodeSubArray(allLocations);
+
     // return the election data with all the long/lat coordinates added
-    console.log('electionData ->', electionData.pollingLocations[0].address);
     return electionData;
   };
 

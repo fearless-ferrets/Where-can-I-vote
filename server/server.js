@@ -21,8 +21,6 @@ app.use('/api', router);
 //creates a  router for logins
 app.use('/api/login', require('./routes/login'));
 
-app.use('/api/login', require('./routes/login'));
-
 //creates a  router for and signups
 app.use('/api/signup', require('./routes/signup'));
 
