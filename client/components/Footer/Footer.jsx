@@ -1,14 +1,14 @@
 import React from 'react';
-
+import { Link } from 'react-router-dom';
 import styles from './Footer.css';
 
 export default (props) => {
   return (
     <div className={styles.Footer}>
       <span>
-        <a href="/note">Note To Our Users</a>
+        <Link to="/note">Note To Our Users</Link>
         <span> | </span>
-        <a href="/about">About Us</a>
+        <Link to="/about">About Us</Link>
       </span>
     </div>
   );

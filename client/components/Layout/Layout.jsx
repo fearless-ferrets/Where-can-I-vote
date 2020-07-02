@@ -5,7 +5,6 @@ import styles from './Layout.css';
 
 import NavBar from '../NavigationBar/NavigationBar';
 import Footer from '../Footer/Footer';
-//  other components
 
 export default function Layout(props) {
   const { children } = props;
