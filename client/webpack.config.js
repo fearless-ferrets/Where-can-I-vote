@@ -20,13 +20,15 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, '../dist'),
     filename: 'bundle[hash].js',
+    publicPath: '/',
   },
   devServer: {
     contentBase: path.join(__dirname, '../dist'),
     compress: true,
     proxy: {
-      '/': 'http://localhost:3000',
+      '*': 'http://localhost:3000',
     },
+    historyApiFallback: true,
   },
   devtool: isProduction ? 'source-map' : 'inline-source-map',
   module: {

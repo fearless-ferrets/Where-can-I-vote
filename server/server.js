@@ -17,10 +17,10 @@ app.use(express.json());
 // define route handlers
 app.use('/api', router);
 
-//create a new router for logins
+// create a new router for logins
 app.use('/api/login', login);
 
-//create a new router for and signups
+// create a new router for and signups
 app.use('/api/signup', router);
 
 // serve up static assets
@@ -46,5 +46,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(port, () =>
-  console.log(`Example app listening at http://localhost:${port}`)
+  console.log(`Where Can I Vote? - server is listening at http://localhost:${port}`)
 );
