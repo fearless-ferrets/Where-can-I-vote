@@ -121,6 +121,7 @@ controller.apiQueries = (req, res, next) => {
       );
   };
 
+
   const checkRedisOrGeocode = async (address) => {
     // query string
     const queryURI = `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${mapsAPI}`;

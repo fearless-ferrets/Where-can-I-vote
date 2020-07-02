@@ -1,12 +1,25 @@
 .NavBar {
   background-color: #145594;
-  height: 5vh;
-  box-shadow: 0 3px 1px 0px hsl(0, 0%, 70%);
   display: flex;
   align-items: center;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-between;
   position: sticky;
   top: 0;
   color: #fbfdfc;
+  font-size: 20px;
   font-weight: bold;
+}
+
+.site__title {
+  padding: 20px;
+}
+
+.login__signup {
+  padding: 20px;
+}
+
+.NavBar a {
+  color: #fbfdfc;
+  text-decoration: none;
 }
