@@ -7,6 +7,7 @@ const Electioninfo = ({ payload }) => {
   // if array length is 0 then render nothing
 
   console.log('ElectionINFO', payload);
+
   let electionAdministrationBody;
   if (payload.length > 0) {
     electionAdministrationBody = payload[0].electionAdministrationBody;
