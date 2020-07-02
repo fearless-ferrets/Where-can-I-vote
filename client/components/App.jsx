@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import axios from 'axios';
 
@@ -13,22 +13,37 @@ import LogInForm from './forms/log-in';
 const App = () => {
   const [votingInfo, setVotingInfo] = useState(null);
   const [error, setError] = useState(null);
+  useEffect(()=>{
+    console.log(`State is now ${JSON.stringify(votingInfo)}`)
+  }, [votingInfo])
 
-  const handleOnSubmit = (addressData) => {
-    axios
-      .get('/api', {
-        params: {
-          lat: addressData.latitude,
-          long: addressData.longitude,
-          address: addressData.address,
-        },
-      })
-      .then(({ data }) => {
-        setVotingInfo(data);
-      })
-      .catch((e) => {
-        setError(e.response.data);
-      });
+  const handleOnSubmit = async (addressData) => {
+    console.log(`Submitting address data ${JSON.stringify(addressData)}`);
+    // first get the user location and render the map
+    // set
+    setVotingInfo({
+      userLocation:{
+        lat: addressData.latitude,
+        long: addressData.longitude,
+        address: addressData.address,
+      },
+    });
+
+    try {
+      console.log("Now sending request")
+      const res = await axios
+        .get('/api', {
+          params: {
+            lat: addressData.latitude,
+            long: addressData.longitude,
+            address: addressData.address,
+          },
+        })
+      setVotingInfo(res.data);
+    } catch (error) {
+      setError(e.response.data);
+    }
+    
   };
 
   // these are like the "pages" in our app

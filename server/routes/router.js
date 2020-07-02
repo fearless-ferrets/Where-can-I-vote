@@ -6,7 +6,6 @@ const router = express.Router();
 
 router.get(
   '/',
-
   controller.apiQueries,
   (req, res) => {
     console.log('saving final election data object for front end');
