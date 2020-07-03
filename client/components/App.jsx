@@ -39,6 +39,7 @@ const App = () => {
             address: addressData.address,
           },
         })
+      console.log(`res.data -->`, res.data);
       setVotingInfo(res.data);
     } catch (error) {
       setError(e.response.data);
@@ -52,7 +53,7 @@ const App = () => {
   function Home() {
     return (
       <div>
-        {votingInfo ? (
+        {votingInfo && votingInfo.election ? (
           <>
             <CivicSummaryComponent votingInfo={votingInfo} />
             <Map mapData={votingInfo} />

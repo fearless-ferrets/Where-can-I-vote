@@ -57,7 +57,7 @@ const CivicSummary = ({ votingInfo }) => {
         />
       </div>
       <div className={localStyles.summary__middle}>
-        Election Day: <strong>{election.electionDay}</strong>
+        Election Day: <strong>{ election && election.electionDay}</strong>
       </div>
       <Electioninfo payload={state} />
     </div>
