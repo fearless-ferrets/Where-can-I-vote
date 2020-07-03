@@ -1,4 +1,5 @@
 const path = require('path');
+const history = require('connect-history-api-fallback');
 require('dotenv').config({
   path: path.resolve(__dirname, '../client/.env'),
 });
@@ -15,13 +16,16 @@ const port = 3000;
 // used to parse JSON bodies
 app.use(express.json());
 
+// hopefully going to fix the inability to go directly to URLs outside of root
+app.use(history());
+
 // define route handlers
 app.use('/api', router);
 
-//creates a  router for logins
+// creates a router for logins
 app.use('/api/login', require('./routes/login'));
 
-//creates a  router for and signups
+// creates a router for and signups
 app.use('/api/signup', require('./routes/signup'));
 
 // serve up static assets
@@ -29,7 +33,7 @@ app.use(express.static(path.resolve(__dirname, '../dist')));
 
 // catch-all route handler for any requests to an unknown route
 app.get('*', (req, res) => {
-  res.sendStatus(404);
+  res.redirect('/');
 });
 
 // global error handler
@@ -47,5 +51,4 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(port, () =>
-  console.log(`Example app listening at http://localhost:${port}`)
-);
+  console.log(`Where Can I Vote? - server is listening at http://localhost:${port}`));

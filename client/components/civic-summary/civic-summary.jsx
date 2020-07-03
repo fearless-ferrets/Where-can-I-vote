@@ -24,7 +24,7 @@ const Electioninfo = ({ payload }) => {
                 .join(' ')}
             </a>
           );
-        }):null}
+        })}
       </div>
     </div>
   );

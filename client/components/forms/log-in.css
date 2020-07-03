@@ -16,6 +16,10 @@
   align-items: center;
 }
 
+.form__title {
+  margin-bottom: 20px;
+}
+
 .form {
   display: flex;
   justify-content: center;
@@ -24,8 +28,17 @@
   width: 75%;
 }
 
-.form__title {
-  margin-bottom: 20px;
+input {
+  padding: 0.8rem 1rem;
+  border: none;
+  border-radius: 5px;
+  width: 100%;
+  margin: 10px 0 20px;
+  outline: none;
+  color: var(--secondary-color);
+  background-color: white;
+  font-size: 12px;
+  box-sizing: border-box;
 }
 
 .subtext {
@@ -40,7 +53,7 @@
   align-self: bottom;
 }
 
-.call__to__action {
+.labels {
   font-family: 'Work Sans';
   font-weight: 600;
   font-size: 14px;
@@ -57,14 +70,14 @@
   border-radius: 5px;
 }
 
-.search__input__button {
+button {
   background: #ad3030;
   border-radius: 5px;
   height: 3.75em;
   border: none;
 }
 
-.search__input__button_text {
+.button_text {
   font-family: 'Work Sans';
   font-style: normal;
   font-weight: 600;

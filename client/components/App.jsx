@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import axios from 'axios';
 
+// Components
 import Layout from './Layout/Layout';
 import AddressComponent from './address-search/address-search';
 import CivicSummaryComponent from './civic-summary/civic-summary';
 import Map from './Map/Map';
+import SignUpForm from './forms/sign-up';
+import LogInForm from './forms/log-in';
 
 const App = () => {
   const [votingInfo, setVotingInfo] = useState(null);
@@ -18,27 +22,23 @@ const App = () => {
     // first get the user location and render the map
     // set
     setVotingInfo({
-                   userLocation:{
-                                  lat: addressData.latitude,
-                                  long: addressData.longitude,
-                                  address: addressData.address
-                                }
-                  }
-                );
+      userLocation:{
+        lat: addressData.latitude,
+        long: addressData.longitude,
+        address: addressData.address,
+      },
+    });
 
     try {
       console.log("Now sending request")
       const res = await axios
-      .get('/api', {
-        params: {
-          lat: addressData.latitude,
-          long: addressData.longitude,
-          address: addressData.address,
-          // .replace(/,/g, '')
-          // .replace(/ USA$/g, '')
-          // .trim(),
-        },
-      })
+        .get('/api', {
+          params: {
+            lat: addressData.latitude,
+            long: addressData.longitude,
+            address: addressData.address,
+          },
+        })
       setVotingInfo(res.data);
     } catch (error) {
       setError(e.response.data);
@@ -46,45 +46,56 @@ const App = () => {
     
   };
 
+  // these are like the "pages" in our app
+
+  // this one currently handles the initial address form and returned summary and map for elections
+  function Home() {
+    return (
+      <div>
+        {votingInfo ? (
+          <>
+            <CivicSummaryComponent votingInfo={votingInfo} />
+            <Map mapData={votingInfo} />
+          </>
+        ) : (
+          <AddressComponent onSubmit={handleOnSubmit} error={error} />
+        )}
+      </div>
+    );
+  }
+
   return (
-    <Layout>
-      {/* Anything goes in here will be centered both vertically and horizontally
+    <Router>
+      <Layout>
+        {/* Anything goes in here will be centered both vertically and horizontally
       since the Layout Component has display of flex. */}
-      {votingInfo ? (
-        <>
-          <CivicSummaryComponent votingInfo={votingInfo} />
-          <Map mapData={votingInfo} />
-        </>
-      ) : (
-        <AddressComponent onSubmit={handleOnSubmit} error={error} />
-      )}
-    </Layout>
+        {/*
+          A <Switch> looks through all its children <Route>
+          elements and renders the first one whose path
+          matches the current URL. Use a <Switch> any time
+          you have multiple routes, but you want only one
+          of them to render at a time
+        */}
+        <Switch>
+          <Route exact path="/">
+            <Home />
+          </Route>
+          <Route exact path="/sign-up">
+            <SignUpForm />
+          </Route>
+          <Route exact path="/log-in">
+            <LogInForm />
+          </Route>
+          <Route exact path="/note">
+            {/* Put Note to our Users component here */}
+          </Route>
+          <Route exact path="/about">
+            {/* Put About component here */}
+          </Route>
+        </Switch>
+      </Layout>
+    </Router>
   );
 };
+
 export default App;
-
-// import React, { Component } from 'react';
-// import Layout from './Layout/Layout.jsx';
-// import NavBar from './NavigationBar/NavigationBar.jsx';
-// import Footer from './Footer/Footer.jsx';
-
-// class App extends Component {
-//   constructor(props) {
-//     super(props);
-//     this.onSubmit = this.onSubmit.bind(this);
-//   }
-//   onSubmit(event) {
-//     event.preventDefault(event);
-//     console.log('form submitted');
-//   }
-//   render() {
-//     return (
-//       <Layout>
-//         <NavBar />
-
-//         <Footer />
-//       </Layout>
-//     );
-//   }
-// }
-// export default App;
