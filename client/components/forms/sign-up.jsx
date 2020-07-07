@@ -1,22 +1,30 @@
-import React, { useState } from 'react';
-import styles from './sign-up.css';
+import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { signup } from '../../actions/user';
+import styles from './sign-up.css';
+import { signup, clearError } from '../../actions/user';
 
-const SignUpForm = ({ loggedIn, signup, errorMessage }) => {
-  if(loggedIn) return <Redirect to="/"/>
+const SignUpForm = ({ loggedIn, signup, clearError, errorMessage }) => {
+  if (loggedIn) {
+    clearError();
+    return <Redirect to="/" />;
+  }
 
   const [bananas, setFormBananas] = useState({
     // this state is bananas b-a-n-a-n-a-s
-    username:'',
-    password:'', 
-    email:''
+    username: '',
+    password: '',
+    email: '',
   });
 
   const { username, password, email } = bananas;
 
-  const onChange = e => setFormBananas({ ...bananas, [e.target.name] : e.target.value })
+  // on mount, clear the error message
+  useEffect(() => {
+    clearError();
+  }, []);
+
+  const onChange = (e) => setFormBananas({ ...bananas, [e.target.name]: e.target.value });
 
   return (
     <div className={styles.form__div}>
@@ -26,36 +34,36 @@ const SignUpForm = ({ loggedIn, signup, errorMessage }) => {
           <label className={styles.labels} htmlFor="username">
             Username
           </label>
-          <input placeholder="User1" name ="username" onChange={onChange}/>
+          <input placeholder="User1" name="username" onChange={onChange} />
           <label className={styles.labels} htmlFor="password">
             Password
           </label>
-          <input placeholder="************" type="password" name="password" onChange={onChange}/>
+          <input placeholder="************" type="password" name="password" onChange={onChange} />
           <label className={styles.labels} htmlFor="email">
             Email
           </label>
-          <input placeholder="myname@gmail.com" type="email" name="email" onChange={onChange}/>
-          <button type="submit" onClick={ (e) => {
+          <input placeholder="myname@gmail.com" type="email" name="email" onChange={onChange} />
+          <button type="submit" onClick={(e) => {
             e.preventDefault();
+            clearError();
             signup(username, password, email);
-            } } >
+            }}>
             <p className={styles.button_text}>
               Create Account
             </p>
           </button>
         </form>
+        <div className={styles.errorMessage}>{errorMessage}</div>
       </div>
-      <div className={styles.errorMessage}>{errorMessage}</div> 
     </div>
   );
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   loggedIn: state.userReducer.loggedIn,
-  errorMessage: state.userReducer.errorMessage
-
+  errorMessage: state.userReducer.errorMessage,
 });
 
-const mapDispatchToProps = { signup }
+const mapDispatchToProps = { signup, clearError };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignUpForm);
