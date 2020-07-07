@@ -4,7 +4,8 @@ import {
   SIGNUP_FAIL,
   LOGIN_FAIL,
   LOGOUT,
-} from "../constants/actionTypes";
+  CLEAR_ERROR,
+} from '../constants/actionTypes';
 
 const initialState = {
   loggedIn: false,
@@ -25,7 +26,10 @@ export default function (state = initialState, action) {
     case SIGNUP_FAIL:
     case LOGIN_FAIL:
       return { ...state, errorMessage: payload };
-
+    case LOGOUT:
+      return { ...state, loggedIn: false };
+    case CLEAR_ERROR:
+      return { ...state, errorMessage: null };
     default:
       return state;
   }
