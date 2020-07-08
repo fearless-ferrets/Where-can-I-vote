@@ -121,7 +121,6 @@ controller.apiQueries = (req, res, next) => {
       );
   };
 
-
   const checkRedisOrGeocode = async (address) => {
     // query string
     const queryURI = `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${mapsAPI}`;
@@ -141,7 +140,8 @@ controller.apiQueries = (req, res, next) => {
       return fetch(queryURI)
         .then((resp) => resp.json())
         .then((resp) => {
-          if (
+          if (resp.results.length === 0) console.log('address ->', address);
+          else if (
             resp.results[0].geometry.location.hasOwnProperty('lat') &&
             resp.results[0].geometry.location.hasOwnProperty('lng')
           ) {
@@ -152,6 +152,9 @@ controller.apiQueries = (req, res, next) => {
             client.set(address, JSON.stringify(locationObj));
             return locationObj;
           }
+        })
+        .catch((err) => {
+          console.log(err);
         });
     }
 
