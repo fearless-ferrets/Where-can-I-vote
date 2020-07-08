@@ -9,23 +9,25 @@ const Electioninfo = ({ payload }) => {
   console.log('ElectionINFO', payload);
 
   let electionAdministrationBody;
-  if (payload.length > 0) {
+  if (payload[0].electionAdministrationBody) {
     electionAdministrationBody = payload[0].electionAdministrationBody;
   }
   return (
     <div className={localStyles.summary__lower}>
-      <div className={localStyles.summary__links}>
-        {Object.keys(electionAdministrationBody).map((key) => {
-          return (
-            <a href={`${electionAdministrationBody[key]}`} key={key}>
-              {key
-                .split(/(?=[A-Z])/)
-                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(' ')}
-            </a>
-          );
-        })}
-      </div>
+      {electionAdministrationBody && (
+        <div className={localStyles.summary__links}>
+          { Object.keys(electionAdministrationBody).map((key) => {
+            return (
+              <a href={`${electionAdministrationBody[key]}`} key={key}>
+                {key
+                  .split(/(?=[A-Z])/)
+                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(' ')}
+              </a>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };

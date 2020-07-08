@@ -41,10 +41,9 @@ const App = () => {
         })
       console.log(`res.data -->`, res.data);
       setVotingInfo(res.data);
-    } catch (error) {
-      setError(e.response.data);
+    } catch (err) {
+      setError(err.response.data);
     }
-    
   };
 
   // these are like the "pages" in our app
