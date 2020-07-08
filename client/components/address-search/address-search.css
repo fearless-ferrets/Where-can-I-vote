@@ -1,3 +1,10 @@
+.MainContainer {
+  display: flex;
+  align-items: center;
+  height: 90vh;
+  justify-content: space-around;
+}
+
 .form__container {
   display: flex;
   flex-direction: column;

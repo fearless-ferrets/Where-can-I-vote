@@ -19,23 +19,25 @@ const AddressSearch = ({ onSubmit, error }) => {
   }, []);
 
   return (
-    <div className={styles.form__div}>
-      <h2 className={styles.form__title}>Find local voting locations:</h2>
-      <div className={styles.form__container}>
-        <form className={styles.form} onSubmit={onFormSubmit}>
-          <label className={styles.call__to__action} htmlFor="address">
-            Enter your address below*
-          </label>
-          <GeoSearchBar onSubmit={handleAddress} />
-          <p className={styles.subtext}>*US Addresses only</p>
-          <button type="submit" className={styles.search__input__button}>
-            <p className={styles.search__input__button_text}>
-              Show My Locations
-            </p>
-          </button>
-        </form>
+    <div className={styles.MainContainer}>
+      <div className={styles.form__div}>
+        <h2 className={styles.form__title}>Find local voting locations:</h2>
+        <div className={styles.form__container}>
+          <form className={styles.form} onSubmit={onFormSubmit}>
+            <label className={styles.call__to__action} htmlFor="address">
+              Enter your address below*
+            </label>
+            <GeoSearchBar onSubmit={handleAddress} />
+            <p className={styles.subtext}>*US Addresses only</p>
+            <button type="submit" className={styles.search__input__button}>
+              <p className={styles.search__input__button_text}>
+                Show My Locations
+              </p>
+            </button>
+          </form>
+        </div>
+        {error && <div className={styles.errorMessage}>{error.error}</div>}
       </div>
-      {error && <div className={styles.errorMessage}>{error.error}</div>}
     </div>
   );
 };
