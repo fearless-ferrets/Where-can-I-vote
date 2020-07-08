@@ -2,13 +2,12 @@
   font-family: 'Work Sans', sans-serif;
   background-color: #ffffff;
   height: 100vh;
-  width: 100vw;
+  /* width: 100vw; */
 }
 
-.ContentContainer {
-  width: 100%;
-  height: 90vh;
+/* .ContentContainer {
+  height: 85vh;
   display: flex;
   justify-content: center;
   align-items: center;
-}
+} */
