@@ -1,47 +1,40 @@
 const express = require('express');
-const router = express.Router();
-// const userController = require('../controllers/user-controllers');
-const dbconnect = require('../models/model');
 const bcrypt = require('bcrypt');
-var jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const { check, validationResult } = require('express-validator');
+const dbconnect = require('../models/model');
 
-//registered user login
+const router = express.Router();
 
+// registered user login
 router.post(
   '/',
   [
-    //which one of them?
-    check('name', 'The username is required').not().isEmpty(),
-    check('email', 'A valid e-mail is required').isEmail(),
+    // express validation for user input (not quite working properly)
+    check('username', 'The username is required').not().isEmpty(),
     check(
       'password',
-      'Please enter a password with 6 of more characters'
+      'Please enter a password with 6 or more characters',
     ).isLength({ min: 6 }),
   ],
 
-  async (req, res) => {
+  async (req, res, next) => {
     const validationErrors = validationResult(req);
 
-    //check the quality of incoming (req) data
+    // check the quality of incoming (req) data
     if (!validationErrors.isEmpty) {
       return res.status(422).json({ errors: validationErrors.array() });
     }
 
-    //check if the user exists // change if it is email
+    // check if the user exists // change if it is email
     const { username, password } = req.body;
-    //    const username = req.body.username;
-    //   const password = req.body.password;
 
     const query = `SELECT * FROM users.user_information WHERE username='${username}'`;
 
     try {
       const queryResult = await dbconnect.query(query);
 
-      if (queryResult.rows.length == 0)
-        return res.status(400).json({
-          errors: [{ msg: 'Invalid credentials /no such username/' }],
-        });
+      if (queryResult.rows.length === 0) return next('Invalid credentials');
 
       const hashedpassword = queryResult.rows[0].password;
 
@@ -50,16 +43,12 @@ router.post(
       console.log('hashedPassword->', hashedpassword);
       console.log('passwordMatches->', passwordMatches);
 
-      if (!passwordMatches) {
-        return res.status(400).json({
-          errors: [{ msg: 'Invalid credentials /incorrect password/' }],
-        });
-      }
+      if (!passwordMatches) return next('Invalid credentials');
 
-      //return JWT
+      // return JWT
       const payload = {
         user: {
-          id: queryResult.id, //or what else can be taken from the DB
+          id: queryResult.id, // or what else can be taken from the DB
         },
       };
 
@@ -76,12 +65,7 @@ router.post(
       console.log(error.message);
       res.status(500).send('Looks like we have a server problem!');
     }
-  }
-
-  // userController.verifyUser,
-  // (req, res) => {
-  //   res.status(200);
-  // }
+  },
 );
 
 module.exports = router;
