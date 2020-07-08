@@ -11,8 +11,8 @@
   border-radius: 5px;
   font-family: Work Sans;
   font-style: normal;
-  position: absolute;
-  left: 10%;
+  position: relative;
+  /* left: 10%; */
   padding: 3em 0;
 }
 
