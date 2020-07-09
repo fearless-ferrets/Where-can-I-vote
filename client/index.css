@@ -4,3 +4,10 @@
   margin: 0;
   padding: 0;
 }
+
+.mainContainer {
+  display: flex;
+  align-items: center;
+  height: 100vh;
+  justify-content: space-around;
+}

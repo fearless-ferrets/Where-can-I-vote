@@ -38,11 +38,10 @@ const options = {
 };
 
 const mapContainerStyle = {
-  height: `80vh`,
-  width: `45%`,
-  position: 'absolute',
-  top: '50%',
-  transform: 'translate(-15%,-50%)',
+  height: '75vh',
+  width: '60vw',
+  position: 'relative',
+  overflow: 'hidden',
 };
 const InfoWrap = styled.div`
   display: ${(props) => props.display || 'flex'};
@@ -108,34 +107,20 @@ const Map = ({ mapData }) => {
   console.log('MAP DATA', mapData);
   console.log(`User Location`, JSON.stringify(mapData.userLocation));
   
-  const { pollingLocations } = mapData;
+  const { pollingLocations, earlyVoteSites, dropOffLocations } = mapData;
 
-  const initPosition = {
-    lat: 36.2111059,
-    lng: -113.7191045,
-  };
+  // const initPosition = {
+  //   lat: 36.2111059,
+  //   lng: -113.7191045,
+  // };
 
-  //temp test coordinates
-  const markersDefault = [
-    {
-      id: 1,
-      position: { lat: 37.3609851, lng: -122.0029431 },
-      title: 'Hello World1!',
-      desc: 'text 01',
-    },
-    {
-      id: 2,
-      position: { lat: 37.36808, lng: -122.267645 },
-      title: 'Hello World2!',
-      desc: 'text 02',
-    },
-    {
-      id: 3,
-      position: { lat: 40.6976684, lng: -74.2605591 },
-      title: 'Hello World3!',
-      desc: 'text 03',
-    },
-  ];
+  // Note: coordinates look like this for markers:
+  // const markersDefault = {
+  //   id: 1,
+  //   position: { lat: 37.3609851, lng: -122.0029431 },
+  //   title: 'Hello World1!',
+  //   desc: 'text 01',
+  // };
 
   const [markers, setMarkerMap] = useState(null);
   const [infoOpen, setInfoOpen] = useState(null);
@@ -168,7 +153,7 @@ const Map = ({ mapData }) => {
   };
 
   return (
-    <div>
+    <div style={{ display: 'flex' }}>
       <LoadScriptOnlyIfNeeded
         googleMapsApiKey={process.env.MAPS_API_KEY}
         language="en"
@@ -202,7 +187,47 @@ const Map = ({ mapData }) => {
                 scale: 1.25,
               }}
             />
-          )):null}
+          )) : null}
+
+          {earlyVoteSites ? earlyVoteSites.map((location) => (
+            <Marker
+              key={location.address.locationName}
+              position={{
+                lat: location.address.latitude,
+                lng: location.address.longitude,
+              }}
+              onLoad={(marker) => markerLoadHandler(marker, location)}
+              onClick={(marker) => markerClickHandler(marker, location)}
+              icon={{
+                path:
+                  'M4 24h-2v-24h2v24zm18-21.387s-1.621 1.43-3.754 1.43c-3.36 0-3.436-2.895-7.337-2.895-2.108 0-4.075.98-4.909 1.694v12.085c1.184-.819 2.979-1.681 4.923-1.681 3.684 0 4.201 2.754 7.484 2.754 2.122 0 3.593-1.359 3.593-1.359v-12.028z',
+                fillColor: '#033362',
+                fillOpacity: 1.0,
+                strokeWeight: 0,
+                scale: 1.25,
+              }}
+            />
+          )) : null}
+
+          { dropOffLocations ? dropOffLocations.map((location) => (
+            <Marker
+              key={location.address.locationName}
+              position={{
+                lat: location.address.latitude,
+                lng: location.address.longitude,
+              }}
+              onLoad={(marker) => markerLoadHandler(marker, location)}
+              onClick={(marker) => markerClickHandler(marker, location)}
+              icon={{
+                path:
+                  'M4 24h-2v-24h2v24zm18-21.387s-1.621 1.43-3.754 1.43c-3.36 0-3.436-2.895-7.337-2.895-2.108 0-4.075.98-4.909 1.694v12.085c1.184-.819 2.979-1.681 4.923-1.681 3.684 0 4.201 2.754 7.484 2.754 2.122 0 3.593-1.359 3.593-1.359v-12.028z',
+                fillColor: '#033362',
+                fillOpacity: 1.0,
+                strokeWeight: 0,
+                scale: 1.25,
+              }}
+            />
+          )) : null}
 
           {infoOpen && selectedPlace && (
             <InfoWindow

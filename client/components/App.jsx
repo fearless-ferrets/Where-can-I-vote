@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import axios from 'axios';
 
+// Styles
+import styles from '../index.css';
+
 // Components
 import Layout from './Layout/Layout';
 import AddressComponent from './address-search/address-search';
@@ -50,16 +53,17 @@ const App = () => {
 
   // this one currently handles the initial address form and returned summary and map for elections
   function Home() {
+    if (votingInfo && votingInfo.election) {
+      return (
+        <div className={styles.mainContainer}>
+          <CivicSummaryComponent votingInfo={votingInfo} />
+          <Map mapData={votingInfo} />
+        </div>
+      );
+    }
     return (
-      <div>
-        {votingInfo && votingInfo.election ? (
-          <>
-            <CivicSummaryComponent votingInfo={votingInfo} />
-            <Map mapData={votingInfo} />
-          </>
-        ) : (
-          <AddressComponent onSubmit={handleOnSubmit} error={error} />
-        )}
+      <div className={styles.mainContainer}>
+        <AddressComponent onSubmit={handleOnSubmit} error={error} />
       </div>
     );
   }
@@ -67,8 +71,6 @@ const App = () => {
   return (
     <Router>
       <Layout>
-        {/* Anything goes in here will be centered both vertically and horizontally
-      since the Layout Component has display of flex. */}
         {/*
           A <Switch> looks through all its children <Route>
           elements and renders the first one whose path

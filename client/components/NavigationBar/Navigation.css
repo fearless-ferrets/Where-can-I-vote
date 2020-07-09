@@ -4,11 +4,13 @@
   align-items: center;
   flex-direction: row;
   justify-content: space-between;
-  position: sticky;
+  position: absolute;
   top: 0;
+  width: 100%;
   color: #fbfdfc;
   font-size: 20px;
   font-weight: bold;
+  /* box-sizing:inherit; */
 }
 
 .site__title {
